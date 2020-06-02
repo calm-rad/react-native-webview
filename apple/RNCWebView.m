@@ -193,7 +193,7 @@ static NSDictionary* customCertificatesForHost;
   if (!navigationAction.targetFrame.isMainFrame) {
     [webView loadRequest:navigationAction.request];
   }
-  return nil;
+  return webView;
 }
 
 - (WKWebViewConfiguration *)setUpWkWebViewConfig
