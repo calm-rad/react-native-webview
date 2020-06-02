@@ -18,6 +18,7 @@
 {
   NSConditionLock *_shouldStartLoadLock;
   BOOL _shouldStartLoad;
+  RNCWebView *newWindow;
 }
 
 RCT_EXPORT_MODULE()
@@ -28,8 +29,9 @@ RCT_EXPORT_MODULE()
 - (RCTUIView *)view
 #endif // !TARGET_OS_OSX
 {
-  RNCWebView *webView = [RNCWebView new];
+  RNCWebView *webView = newWindow ? newWindow : [RNCWebView new];
   webView.delegate = self;
+  newWindow = nil;
   return webView;
 }
 
@@ -195,6 +197,9 @@ shouldStartLoadForRequest:(NSMutableDictionary<NSString *, id> *)request
 {
   _shouldStartLoadLock = [[NSConditionLock alloc] initWithCondition:arc4random()];
   _shouldStartLoad = YES;
+  if (newWindow == nil) {
+    newWindow = webView;
+  }
   request[@"lockIdentifier"] = @(_shouldStartLoadLock.condition);
   callback(request);
 
